@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
+
+import { Port } from "./port";
 import {
   Box,
   InputLabel,
@@ -58,7 +60,7 @@ export const RegistrationForm = memo(() => {
         if (isSignIn) {
           axios
             .post(
-              "http://localhost:8080/user/login",
+              `http://localhost:${Port}/user/login`,
               { email, password },
               { withCredentials: true }
             )
@@ -75,7 +77,7 @@ export const RegistrationForm = memo(() => {
           setIsError(false);
           axios
             .post(
-              "http://localhost:8080/user/signup",
+              `http://localhost:${Port}/user/login`,
               { email, password },
               { withCredentials: true }
             )
