@@ -39,3 +39,23 @@ export const create = async (req: Request, res: Response) => {
     errorHandler(res, err);
   }
 };
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const { projectId } = req.body;
+
+    const removedProject = await Project.findByIdAndDelete(projectId);
+
+    if (!removedProject) {
+      return res.status(401).json({ msg: "Project was not delete" });
+    }
+
+    const projects = await Project.find();
+
+    res.status(200).json({
+      data: projects,
+    });
+  } catch (err) {
+    errorHandler(res, err);
+  }
+};
