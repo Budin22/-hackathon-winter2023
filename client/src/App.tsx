@@ -1,6 +1,8 @@
 import React from "react";
 import { RegistrationForm } from "./component/RegistrationFrom";
 import { Typography } from "@mui/material";
+import Signin from "./signinComponents/Signin";
+import Login from "./loginComponents/Login";
 // import axios from "axios";
 //
 // type Project = {
