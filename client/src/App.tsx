@@ -1,47 +1,38 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import { RegistrationForm } from "./component/RegistrationFrom";
+import { Typography } from "@mui/material";
+// import axios from "axios";
+//
+// type Project = {
+//   projectName: string;
+//   date: string;
+//   author: string;
+// };
 
-type Project = {
-  projectName: string;
-  date: string;
-  author: string;
-};
-
-function App() {
-  const [text, setText] = useState<string>("");
-  const [projectList, setProjectList] = useState<Array<Project>>([]);
-
-  useEffect(() => {
-    const projects = axios
-      .get("http://localhost:7070/project")
-      .then((res) => res.data)
-      .then((data) => setProjectList(data));
-  }, []);
-
-  const addProject = () => {};
+export const App = () => {
+  // const [text, setText] = useState<string>("");
+  // const [projectList, setProjectList] = useState<Array<Project>>([]);
+  //
+  // useEffect(() => {
+  //   const projects = axios
+  //     .get("http://localhost:7070/project")
+  //     .then((res) => res.data)
+  //     .then((data) => setProjectList(data));
+  // }, []);
+  //
+  // const addProject = () => {};
 
   return (
     <>
-      <div>
-        <input type="text" value={text} />
-        <button onClick={addProject}>Submit</button>
-      </div>
-      <div>
-        {!!projectList.length &&
-          projectList.map((item) => {
-            return (
-              <div>
-                <h4>{item.projectName}</h4>
-                <h4>{item.date}</h4>
-                <h4>{item.author}</h4>
-                <h4>Progress</h4>
-                <button>remove</button>
-              </div>
-            );
-          })}
-      </div>
+      <Typography
+        sx={{ textAlign: "center", width: "100%" }}
+        component="h2"
+        variant="h4"
+        color="steelblue"
+      >
+        Good start
+      </Typography>
+      {/*<RegistrationForm />;*/}
     </>
   );
-}
-
-export default App;
+};
