@@ -52,3 +52,18 @@ export const login = async (req: Request, res: Response) => {
     errorHandler(res, err);
   }
 };
+
+export const all = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find();
+    if (!users) {
+      return res.status(401).json({ msg: "Users not found" });
+    }
+
+    res.status(200).json({
+      data: users,
+    });
+  } catch (err) {
+    errorHandler(res, err);
+  }
+};

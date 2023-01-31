@@ -13,7 +13,6 @@ import taskRouter from "./routers/task.router";
 
 dotenv.config({ path: ".env" });
 const app = express();
-// initializePassport();
 
 app.set("port", process.env.PORT);
 

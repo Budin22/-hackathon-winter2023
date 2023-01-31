@@ -1,25 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+type Project = {
+  projectName: string;
+  date: string;
+  author: string;
+};
 
 function App() {
+  const [text, setText] = useState<string>("");
+  const [projectList, setProjectList] = useState<Array<Project>>([]);
+
+  useEffect(() => {
+    const projects = axios
+      .get("http://localhost:7070/project")
+      .then((res) => res.data)
+      .then((data) => setProjectList(data));
+  }, []);
+
+  const addProject = () => {};
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div>
+        <input type="text" value={text} />
+        <button onClick={addProject}>Submit</button>
+      </div>
+      <div>
+        {!!projectList.length &&
+          projectList.map((item) => {
+            return (
+              <div>
+                <h4>{item.projectName}</h4>
+                <h4>{item.date}</h4>
+                <h4>{item.author}</h4>
+                <h4>Progress</h4>
+                <button>remove</button>
+              </div>
+            );
+          })}
+      </div>
+    </>
   );
 }
 
