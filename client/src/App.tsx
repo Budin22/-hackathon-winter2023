@@ -1,6 +1,8 @@
 import React from "react";
-import { RegistrationForm } from "./component/RegistrationFrom";
-import { Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
+import { Form } from "./component/Form";
+import { RegistrationForm } from "./component/RegistrationForm";
+
 // import axios from "axios";
 //
 // type Project = {
@@ -23,16 +25,10 @@ export const App = () => {
   // const addProject = () => {};
 
   return (
-    <>
-      <Typography
-        sx={{ textAlign: "center", width: "100%" }}
-        component="h2"
-        variant="h4"
-        color="steelblue"
-      >
-        Good start
-      </Typography>
-      {/*<RegistrationForm />;*/}
-    </>
+    <Container>
+      <Stack>
+        <RegistrationForm />
+      </Stack>
+    </Container>
   );
 };
