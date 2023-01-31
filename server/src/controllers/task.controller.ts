@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import taskSchema, { TTask } from "../models/Task";
 import { errorHandler } from "../utils/errorHandler";
 import mongoose from "mongoose";
+import Project from "../models/Project";
+import Task from "../models/Task";
 
 export const all = async (req: Request, res: Response) => {
   try {
@@ -50,9 +52,33 @@ export const update = async (req: Request, res: Response) => {
     const Task = mongoose.model<TTask>(projectId, taskSchema);
     const task = await Task.findByIdAndUpdate(taskId, { status });
 
-    console.log(task);
     if (!task) {
-      return res.status(401).json({ msg: "Task was not created" });
+      return res.status(401).json({ msg: "Task was not update" });
+    }
+
+    const allTasks = await Task.find();
+
+    if (!allTasks) {
+      return res.status(401).json({ msg: "Tasks was not get" });
+    }
+
+    res.status(200).json({
+      data: allTasks,
+    });
+  } catch (err) {
+    errorHandler(res, err);
+  }
+};
+
+export const remove = async (req: Request, res: Response) => {
+  try {
+    const { projectId, taskId } = req.body;
+
+    const Task = mongoose.model<TTask>(projectId, taskSchema);
+    const task = await Task.findByIdAndRemove(taskId);
+
+    if (!task) {
+      return res.status(401).json({ msg: "Task was not remove" });
     }
 
     const allTasks = await Task.find();
