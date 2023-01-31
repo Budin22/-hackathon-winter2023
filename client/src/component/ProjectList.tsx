@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Project } from "./Project";
-import { Container, Typography } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import { ProjectAddForm, SingleProject } from "./ProjectAddForm";
 import axios from "axios";
 import { Port } from "./port";
@@ -11,6 +11,7 @@ export interface FetchedProject {
   author: string;
   _id: string;
 }
+
 export const ProjectList = () => {
   const [projects, setProjects] = useState<Array<FetchedProject>>([]);
 
@@ -19,11 +20,11 @@ export const ProjectList = () => {
       .get(`http://localhost:${Port}/project/`, { withCredentials: true })
       .then((res) => res.data)
       .then((data) => {
-        setProjects(data.data);
+        setProjects(data.data.reverse());
       })
       .catch((err) => {
         if (err.response?.status > 200) {
-          console.log("error with get users");
+          console.log("error with get projects");
         }
       });
   }, []);
@@ -35,7 +36,7 @@ export const ProjectList = () => {
       })
       .then((res) => res.data)
       .then((data) => {
-        setProjects(data.data);
+        setProjects(data.data.reverse);
       })
       .catch((err) => {
         if (err.response?.status > 200) {
@@ -51,7 +52,7 @@ export const ProjectList = () => {
       })
       .then((res) => res.data)
       .then((data) => {
-        setProjects(data.data);
+        setProjects(data.data.reverse());
       })
       .catch((err) => {
         if (err.response?.status > 200) {
@@ -60,27 +61,28 @@ export const ProjectList = () => {
       });
   };
 
-  console.log(projects);
   return (
     <Container>
-      <Typography
-        component="h2"
-        variant="h2"
-        textAlign="center"
-        fontWeight="Bold"
-        color="steelblue"
-      >
-        Project list
-      </Typography>
-      <ProjectAddForm addNewProject={addNewProject} />
-      {!!projects.length &&
-        projects.map((project) => (
-          <Project
-            key={project._id}
-            project={project}
-            removeProject={removeProject}
-          />
-        ))}
+      <Stack gap={3}>
+        <Typography
+          component="h2"
+          variant="h2"
+          textAlign="center"
+          fontWeight="Bold"
+          color="steelblue"
+        >
+          Project list
+        </Typography>
+        <ProjectAddForm addNewProject={addNewProject} />
+        {!!projects.length &&
+          projects.map((project) => (
+            <Project
+              key={project._id}
+              project={project}
+              removeProject={removeProject}
+            />
+          ))}
+      </Stack>
     </Container>
   );
 };

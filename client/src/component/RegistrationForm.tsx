@@ -24,170 +24,180 @@ export type TUser = {
   email: string;
 };
 
-export const RegistrationForm = memo(() => {
-  const [isSignIn, setIsSignIn] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
+interface RegistrationFormProps {
+  getUser: (user: string) => void;
+  userIsIn: () => void;
+}
 
-  const schema = useMemo(
-    () =>
-      yup.object({
-        password: yup.string().trim().min(3).max(15).required(),
-        password2: isSignIn
-          ? yup.string()
-          : yup.string().oneOf([yup.ref("password")]),
-        email: yup.string().email().required(),
-      }),
-    [isSignIn]
-  );
+export const RegistrationForm = memo(
+  ({ getUser, userIsIn }: RegistrationFormProps) => {
+    const [isSignIn, setIsSignIn] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<TUser>({
-    resolver: yupResolver(schema),
-  });
+    const schema = useMemo(
+      () =>
+        yup.object({
+          password: yup.string().trim().min(3).max(15).required(),
+          password2: isSignIn
+            ? yup.string()
+            : yup.string().oneOf([yup.ref("password")]),
+          email: yup.string().email().required(),
+        }),
+      [isSignIn]
+    );
 
-  const isSignInHandler = useCallback(() => {
-    setIsSignIn((state) => !state);
-  }, []);
+    const {
+      register,
+      handleSubmit,
+      reset,
+      formState: { errors },
+    } = useForm<TUser>({
+      resolver: yupResolver(schema),
+    });
 
-  const onSubmit: SubmitHandler<TUser> = useCallback(
-    (data) => {
-      try {
-        const { email, password } = data;
-        if (isSignIn) {
-          axios
-            .post(
-              `http://localhost:${Port}/user/login`,
-              { email, password },
-              { withCredentials: true }
-            )
-            .then((res) => res.data)
-            .then((data) => {
-              console.log(data);
-            })
-            .catch((err) => {
-              if (err.response.status > 200) {
-                setIsError(true);
-              }
-            });
-        } else {
-          setIsError(false);
-          axios
-            .post(
-              `http://localhost:${Port}/user/login`,
-              { email, password },
-              { withCredentials: true }
-            )
-            .then((res) => res.data)
-            .then((data) => {
-              setIsSignIn(true);
-              console.log(data);
-            })
-            .catch((err) => {
-              if (err.response.status > 200) {
-                setIsError(true);
-              }
-            });
+    const isSignInHandler = useCallback(() => {
+      setIsSignIn((state) => !state);
+    }, []);
+
+    const onSubmit: SubmitHandler<TUser> = useCallback(
+      (data) => {
+        try {
+          const { email, password } = data;
+          if (isSignIn) {
+            axios
+              .post(
+                `http://localhost:${Port}/user/login`,
+                { email, password },
+                { withCredentials: true }
+              )
+              .then((res) => res.data)
+              .then((data) => {
+                getUser(data.email);
+                userIsIn();
+              })
+              .catch((err) => {
+                if (err.response?.status > 200) {
+                  setIsError(true);
+                }
+              });
+          } else {
+            setIsError(false);
+            axios
+              .post(
+                `http://localhost:${Port}/user/signup`,
+                { email, password },
+                { withCredentials: true }
+              )
+              .then((res) => res.data)
+              .then((data) => {
+                setIsSignIn(true);
+                console.log(data);
+              })
+              .catch((err) => {
+                if (err.response.status > 200) {
+                  setIsError(true);
+                }
+              });
+          }
+          reset();
+        } catch (err) {
+          setIsError(true);
+          console.log("catch error");
         }
-        reset();
-      } catch (err) {
-        setIsError(true);
-        console.log("catch error");
-      }
-    },
-    [isSignIn, reset]
-  );
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Typography
-        sx={{ width: "100%" }}
-        component="h2"
-        variant="h4"
-        color="steelblue"
-      >
-        {isSignIn ? "Login" : "Signup"}
-      </Typography>
-      <Box display="flex">
-        <FormControl sx={{ minWidth: "25%" }} variant="standard">
-          <InputLabel>Email</InputLabel>
-          <Input {...register("email")} placeholder="name@example.com" />
-          <FormHelperText id="email" error>
-            {errors.email?.message}
-          </FormHelperText>
-        </FormControl>
-      </Box>
-      <Box display="flex">
-        <FormControl sx={{ minWidth: "25%" }} variant="standard">
-          <InputLabel>Password</InputLabel>
-          <Input type="password" {...register("password")} />
-          <FormHelperText id="password" error>
-            {errors.password?.message}
-          </FormHelperText>
-        </FormControl>
-      </Box>
-      {!isSignIn && (
+      },
+      [isSignIn, reset, getUser, userIsIn]
+    );
+    return (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Typography
+          sx={{ width: "100%" }}
+          component="h2"
+          variant="h4"
+          color="steelblue"
+        >
+          {isSignIn ? "Login" : "Signup"}
+        </Typography>
         <Box display="flex">
           <FormControl sx={{ minWidth: "25%" }} variant="standard">
-            <InputLabel>Password again</InputLabel>
-            <Input type="password" {...register("password2")} />
-            <FormHelperText id="password2" error>
-              {errors.password2?.message ? "Password should be the same" : ""}
+            <InputLabel>Email</InputLabel>
+            <Input {...register("email")} placeholder="name@example.com" />
+            <FormHelperText id="email" error>
+              {errors.email?.message}
             </FormHelperText>
           </FormControl>
         </Box>
-      )}
-
-      {!isSignIn && (
-        <Box
-          display="flex"
-          gap={3}
-          flexDirection="column"
-          alignItems="flex-start"
-        >
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox onChange={isSignInHandler} value={isSignIn} />}
-              label="I'm Signed In"
-            />
-          </FormGroup>
+        <Box display="flex">
+          <FormControl sx={{ minWidth: "25%" }} variant="standard">
+            <InputLabel>Password</InputLabel>
+            <Input type="password" {...register("password")} />
+            <FormHelperText id="password" error>
+              {errors.password?.message}
+            </FormHelperText>
+          </FormControl>
         </Box>
-      )}
+        {!isSignIn && (
+          <Box display="flex">
+            <FormControl sx={{ minWidth: "25%" }} variant="standard">
+              <InputLabel>Password again</InputLabel>
+              <Input type="password" {...register("password2")} />
+              <FormHelperText id="password2" error>
+                {errors.password2?.message ? "Password should be the same" : ""}
+              </FormHelperText>
+            </FormControl>
+          </Box>
+        )}
 
-      <Box sx={{ paddingTop: 3 }}>
-        <Button
-          variant="contained"
-          type="submit"
-          sx={{
-            maxWidth: "25%",
-            marginRight: 2,
-          }}
-        >
-          {isSignIn ? "Login" : "Registry"}
-        </Button>
-        {isSignIn && (
+        {!isSignIn && (
+          <Box
+            display="flex"
+            gap={3}
+            flexDirection="column"
+            alignItems="flex-start"
+          >
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox onChange={isSignInHandler} value={isSignIn} />
+                }
+                label="I'm Signed In"
+              />
+            </FormGroup>
+          </Box>
+        )}
+
+        <Box sx={{ paddingTop: 3 }}>
           <Button
             variant="contained"
-            onClick={isSignInHandler}
-            sx={{ maxWidth: "25%", marginRight: 2 }}
+            type="submit"
+            sx={{
+              maxWidth: "25%",
+              marginRight: 2,
+            }}
           >
-            Back to signup
+            {isSignIn ? "Login" : "Registry"}
           </Button>
-        )}
-      </Box>
+          {isSignIn && (
+            <Button
+              variant="contained"
+              onClick={isSignInHandler}
+              sx={{ maxWidth: "25%", marginRight: 2 }}
+            >
+              Back to signup
+            </Button>
+          )}
+        </Box>
 
-      {isError && (
-        <Typography
-          sx={{ width: "100%" }}
-          component="p"
-          variant="subtitle1"
-          color="red"
-        >
-          You have not valid email or password
-        </Typography>
-      )}
-    </form>
-  );
-});
+        {isError && (
+          <Typography
+            sx={{ width: "100%" }}
+            component="p"
+            variant="subtitle1"
+            color="red"
+          >
+            You have not valid email or password
+          </Typography>
+        )}
+      </form>
+    );
+  }
+);

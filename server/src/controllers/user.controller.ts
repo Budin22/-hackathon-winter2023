@@ -53,6 +53,25 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+export const isLogin = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.cookies;
+
+    if (typeof token === "string") {
+      const decoded = JWT.decode(token);
+      if (decoded === null || typeof decoded === "string") {
+        return res.status(401).json({ msg: "You need auth" });
+      }
+      const { email } = decoded;
+      res.status(200).json({ email }).end();
+    } else {
+      res.status(402).json({ msg: "You need auth" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const all = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
@@ -65,5 +84,43 @@ export const all = async (req: Request, res: Response) => {
     });
   } catch (err) {
     errorHandler(res, err);
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const token = JWT.sign({ email: "boo", id: "2" }, jwtSecret, {
+      expiresIn: 1,
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1,
+    });
+
+    res.status(200).json({
+      msg: "you are logout",
+    });
+  } catch (err) {
+    errorHandler(res, err);
+  }
+};
+
+export const userIsLogin = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.cookies;
+
+    if (typeof token === "string") {
+      const decoded = JWT.decode(token);
+      if (decoded === null || typeof decoded === "string") {
+        return res.status(401).json({ msg: "You need auth" });
+      }
+      const { email } = decoded;
+
+      res.status(200).json({ email });
+    }
+    res.status(401).json({ msg: "You need auth" });
+  } catch (err) {
+    console.log(err);
   }
 };

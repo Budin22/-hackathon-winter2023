@@ -35,7 +35,7 @@ export const Project = ({ project, removeProject }: ProjectProps) => {
           <Typography
             component="h6"
             variant="h6"
-            maxWidth="42%"
+            maxWidth="37%"
             width="100%"
             color="steelblue"
             fontWeight="Bold"
@@ -55,7 +55,7 @@ export const Project = ({ project, removeProject }: ProjectProps) => {
           <Typography
             component="h4"
             variant="body1"
-            maxWidth="15%"
+            maxWidth="20%"
             width="100%"
             fontWeight="Bold"
             color="steelblue"
