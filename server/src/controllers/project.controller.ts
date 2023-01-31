@@ -42,7 +42,7 @@ export const create = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   try {
-    const { projectId } = req.body;
+    const projectId = req.params.id;
 
     const removedProject = await Project.findByIdAndDelete(projectId);
 

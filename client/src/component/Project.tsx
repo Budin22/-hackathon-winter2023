@@ -10,8 +10,20 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Task } from "./Task";
 import { Progress } from "./Progress";
+import { FetchedProject } from "./ProjectList";
 
-export const Project = () => {
+interface ProjectProps {
+  project: FetchedProject;
+  removeProject: (projectId: string) => void;
+}
+
+export const Project = ({ project, removeProject }: ProjectProps) => {
+  const { projectName, _id, date, author } = project;
+
+  const deleteProject = () => {
+    removeProject(_id);
+  };
+
   return (
     <Accordion>
       <AccordionSummary
@@ -28,7 +40,7 @@ export const Project = () => {
             color="steelblue"
             fontWeight="Bold"
           >
-            Create a good app for football
+            {projectName}
           </Typography>
           <Typography
             component="h4"
@@ -38,7 +50,7 @@ export const Project = () => {
             fontWeight="Bold"
             color="steelblue"
           >
-            Deadline: 22.12.2015 13:15:12
+            Deadline: {date}
           </Typography>
           <Typography
             component="h4"
@@ -48,12 +60,13 @@ export const Project = () => {
             fontWeight="Bold"
             color="steelblue"
           >
-            Author: Budin
+            Author: {author}
           </Typography>
           <Progress progress={12.5} />
           <Button
             variant="contained"
             type="button"
+            onClick={deleteProject}
             sx={{
               marginLeft: "auto",
               marginRight: 3,

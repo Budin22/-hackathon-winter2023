@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/", all);
 router.post("/create", create);
-router.delete("/delete", remove);
+router.delete("/delete/:id", remove);
 
 export default router;

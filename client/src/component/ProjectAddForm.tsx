@@ -1,22 +1,42 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
+import { UserSelect } from "./UserSelect";
 
-export const ProjectAddForm = () => {
-  const projectName = useRef<HTMLInputElement>();
-  const date = useRef<HTMLInputElement>();
+export interface SingleProject {
+  projectName: string;
+  date: string;
+  author: string;
+}
+
+interface ProjectAddFormProps {
+  addNewProject: (project: SingleProject) => void;
+}
+
+export const ProjectAddForm = (props: ProjectAddFormProps) => {
+  const [user, setUser] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [date, setDate] = useState("");
+
+  const { addNewProject } = props;
 
   const addProject = () => {
     if (projectName !== null && date !== null) {
-      const time = date.current?.value.slice(11);
-      const day = date.current?.value.slice(8, 10);
-      const month = date.current?.value.slice(5, 7);
-      const year = date.current?.value.slice(0, 4);
+      const time = date.slice(11);
+      const day = date.slice(8, 10);
+      const month = date.slice(5, 7);
+      const year = date.slice(0, 4);
 
       const currentDate = `${day}.${month}.${year}  ${time}`;
-      const currentProjectName = projectName.current?.value;
-
-      console.log(currentProjectName, currentDate);
+      addNewProject({ projectName, date: currentDate, author: user });
+      console.log(projectName, currentDate, user);
+      setDate("");
+      setProjectName("");
+      setUser("");
     }
+  };
+
+  const getUser = (user: string) => {
+    setUser(user);
   };
   return (
     <Box display="flex" alignItems="center" gap={3}>
@@ -27,14 +47,17 @@ export const ProjectAddForm = () => {
         color="primary"
         multiline
         rows={1}
-        inputRef={projectName}
+        value={projectName}
+        onChange={(e) => setProjectName(e.target.value)}
       />
       <TextField
         sx={{ width: "100%", maxWidth: "20%" }}
         color="primary"
         type="datetime-local"
-        inputRef={date}
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
       />
+      <UserSelect getUser={getUser} user={user} />
       <Button
         variant="contained"
         type="button"
