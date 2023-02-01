@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -18,10 +18,15 @@ interface ProjectProps {
 }
 
 export const Project = ({ project, removeProject }: ProjectProps) => {
+  const [progress, setProgress] = useState(0);
   const { projectName, _id, date, author } = project;
 
   const deleteProject = () => {
     removeProject(_id);
+  };
+
+  const changeProgress = (prog: number) => {
+    setProgress(prog);
   };
 
   return (
@@ -62,7 +67,7 @@ export const Project = ({ project, removeProject }: ProjectProps) => {
           >
             Author: {author}
           </Typography>
-          <Progress progress={12.5} />
+          <Progress progress={progress} />
           <Button
             variant="contained"
             type="button"
@@ -77,7 +82,7 @@ export const Project = ({ project, removeProject }: ProjectProps) => {
         </Box>
       </AccordionSummary>
       <AccordionDetails sx={{ maxHeight: 355, overflowY: "scroll" }}>
-        <TaskList projectId={_id} />
+        <TaskList projectId={_id} changeProgress={changeProgress} />
       </AccordionDetails>
     </Accordion>
   );

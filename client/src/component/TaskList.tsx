@@ -15,10 +15,18 @@ export interface FetchedTask {
 
 interface Props {
   projectId: string;
+  changeProgress: (prog: number) => void;
 }
 
-export const TaskList = ({ projectId }: Props) => {
+export const TaskList = ({ projectId, changeProgress }: Props) => {
   const [tasks, setTasks] = useState<Array<FetchedTask>>([]);
+
+  useEffect(() => {
+    const taskDone = tasks.filter((item) => item.status === "complete").length;
+    const allTask = tasks.length;
+    const progress = (taskDone / allTask) * 100;
+    changeProgress(progress);
+  }, [tasks, changeProgress]);
 
   useEffect(() => {
     axios
@@ -77,7 +85,7 @@ export const TaskList = ({ projectId }: Props) => {
 
   const updateTask = (taskId: string, status: string) => {
     axios
-      .patch(
+      .put(
         `http://localhost:${Port}/task/update`,
         { taskId, status, projectId },
         {
