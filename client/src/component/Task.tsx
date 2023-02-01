@@ -1,37 +1,33 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CloseIcon from "@mui/icons-material/Close";
-import { Button, ButtonGroup, Stack, TextField } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { FetchedTask } from "./TaskList";
 
-const task = {
-  date: "22.12.2022 12:00",
-  users: ["budin22@bk.com", "ali@mail.com", "bengearden@gmail.com"],
-  status: "complete",
-  text: "We need to make a nice breakfast",
-  _id: "dfsdfsdfssf",
-};
-
 interface Props {
   removeTask: (taskId: string) => void;
   task: FetchedTask;
+  updateTask: (taskId: string, status: string) => void;
 }
 
-export const Task = memo(({ removeTask, task }: Props) => {
+export const Task = memo(({ removeTask, task, updateTask }: Props) => {
   const { date, text, status, users, _id } = task;
+  const [statusLocal, setStatusLocal] = useState(status);
 
   const handleChange = (event: SelectChangeEvent) => {
-    // setStatus(event.target.value as string);
+    setStatusLocal(event.target.value as string);
   };
 
-  const changeStatus = () => {};
+  const changeStatus = () => {
+    updateTask(_id, statusLocal);
+  };
 
   const deleteTask = () => {
     removeTask(_id);
@@ -103,7 +99,7 @@ export const Task = memo(({ removeTask, task }: Props) => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={status}
+                  value={statusLocal}
                   label="status"
                   onChange={handleChange}
                 >

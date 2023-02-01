@@ -34,7 +34,7 @@ export const TaskList = ({ projectId }: Props) => {
           console.log("error with get projects");
         }
       });
-  }, []);
+  }, [projectId]);
 
   const addNewTask = (task: SingleTask) => {
     const { text, users, date } = task;
@@ -60,7 +60,7 @@ export const TaskList = ({ projectId }: Props) => {
 
   const removeTask = (taskId: string) => {
     axios
-      .delete(`http://localhost:${Port}/project/delete/${projectId}`, {
+      .delete(`http://localhost:${Port}/task/delete/${projectId}/${taskId}`, {
         withCredentials: true,
       })
       .then((res) => res.data)
@@ -70,7 +70,28 @@ export const TaskList = ({ projectId }: Props) => {
       })
       .catch((err) => {
         if (err.response?.status > 200) {
-          console.log("error with get users");
+          console.log("error with delete task");
+        }
+      });
+  };
+
+  const updateTask = (taskId: string, status: string) => {
+    axios
+      .patch(
+        `http://localhost:${Port}/task/update`,
+        { taskId, status, projectId },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data, "update task");
+        setTasks(data.data.reverse());
+      })
+      .catch((err) => {
+        if (err.response?.status > 200) {
+          console.log("error with update task");
         }
       });
   };
@@ -90,7 +111,12 @@ export const TaskList = ({ projectId }: Props) => {
         <TaskAddForm addNewTask={addNewTask} />
         {!!tasks.length &&
           tasks.map((task) => (
-            <Task key={task._id} task={task} removeTask={removeTask} />
+            <Task
+              key={task._id}
+              task={task}
+              removeTask={removeTask}
+              updateTask={updateTask}
+            />
           ))}
       </Stack>
     </Container>

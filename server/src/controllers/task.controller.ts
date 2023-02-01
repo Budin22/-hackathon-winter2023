@@ -48,6 +48,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   try {
     const { status, projectId, taskId } = req.body;
+    console.log({ status, projectId, taskId });
 
     const Task = mongoose.model<TTask>(projectId, taskSchema);
     const task = await Task.findByIdAndUpdate(taskId, { status });
@@ -72,7 +73,7 @@ export const update = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   try {
-    const { projectId, taskId } = req.body;
+    const { projectId, taskId } = req.params;
 
     const Task = mongoose.model<TTask>(projectId, taskSchema);
     const task = await Task.findByIdAndRemove(taskId);
