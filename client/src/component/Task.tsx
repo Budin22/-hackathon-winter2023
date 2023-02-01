@@ -9,6 +9,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { FetchedTask } from "./TaskList";
 
 const task = {
   date: "22.12.2022 12:00",
@@ -20,9 +21,10 @@ const task = {
 
 interface Props {
   removeTask: (taskId: string) => void;
+  task: FetchedTask;
 }
 
-export const Task = memo(({ removeTask }: Props) => {
+export const Task = memo(({ removeTask, task }: Props) => {
   const { date, text, status, users, _id } = task;
 
   const handleChange = (event: SelectChangeEvent) => {

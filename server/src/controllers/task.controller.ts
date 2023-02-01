@@ -8,7 +8,7 @@ import Task from "../models/Task";
 
 export const all = async (req: Request, res: Response) => {
   try {
-    const { projectId } = req.body;
+    const projectId = req.params.id;
     const Task = mongoose.model<TTask>(projectId, taskSchema);
     const allTasks = await Task.find();
     if (!allTasks) {
@@ -23,10 +23,10 @@ export const all = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
   try {
-    const { text, date, status, users, projectId } = req.body;
+    const { text, date, users, projectId } = req.body;
 
     const Task = mongoose.model<TTask>(projectId, taskSchema);
-    const task = await Task.create({ text, date, status, users });
+    const task = await Task.create({ text, date, status: "no-status", users });
     if (!task) {
       return res.status(401).json({ msg: "Task was not created" });
     }

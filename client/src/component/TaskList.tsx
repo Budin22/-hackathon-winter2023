@@ -22,7 +22,9 @@ export const TaskList = ({ projectId }: Props) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:${Port}/project/`, { withCredentials: true })
+      .get(`http://localhost:${Port}/task/all/${projectId}`, {
+        withCredentials: true,
+      })
       .then((res) => res.data)
       .then((data) => {
         setTasks(data.data.reverse());
@@ -46,7 +48,8 @@ export const TaskList = ({ projectId }: Props) => {
       )
       .then((res) => res.data)
       .then((data) => {
-        setTasks(data.data.reverse);
+        console.log(data, "create task");
+        setTasks(data.data.reverse());
       })
       .catch((err) => {
         if (err.response?.status > 200) {
@@ -62,6 +65,7 @@ export const TaskList = ({ projectId }: Props) => {
       })
       .then((res) => res.data)
       .then((data) => {
+        console.log(data, "delete task");
         setTasks(data.data.reverse());
       })
       .catch((err) => {
@@ -84,15 +88,10 @@ export const TaskList = ({ projectId }: Props) => {
           Task list
         </Typography>
         <TaskAddForm addNewTask={addNewTask} />
-        {/*{!!projects.length &&*/}
-        {/*  projects.map((project) => (*/}
-        {/*    <Project*/}
-        {/*      key={project._id}*/}
-        {/*      project={project}*/}
-        {/*      removeProject={removeProject}*/}
-        {/*    />*/}
-        {/*  ))}*/}
-        <Task removeTask={removeTask} />
+        {!!tasks.length &&
+          tasks.map((task) => (
+            <Task key={task._id} task={task} removeTask={removeTask} />
+          ))}
       </Stack>
     </Container>
   );
