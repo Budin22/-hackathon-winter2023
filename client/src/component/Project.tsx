@@ -8,9 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Task } from "./Task";
 import { Progress } from "./Progress";
 import { FetchedProject } from "./ProjectList";
+import { TaskList } from "./TaskList";
 
 interface ProjectProps {
   project: FetchedProject;
@@ -77,7 +77,7 @@ export const Project = ({ project, removeProject }: ProjectProps) => {
         </Box>
       </AccordionSummary>
       <AccordionDetails sx={{ maxHeight: 355, overflowY: "scroll" }}>
-        <Task />
+        <TaskList projectId={_id} />
       </AccordionDetails>
     </Accordion>
   );
