@@ -67,7 +67,7 @@ export const Project = ({ project, removeProject }: ProjectProps) => {
           >
             Author: {author}
           </Typography>
-          <Progress progress={progress} />
+          <Progress progress={Number.isNaN(progress) ? 0 : progress} />
           <Button
             variant="contained"
             type="button"

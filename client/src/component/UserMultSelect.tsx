@@ -41,7 +41,6 @@ export default function UserMultSelect({ getUsers, usersList }: Props) {
   const [personName, setPersonName] = useState<string[]>([]);
   const [users, setUsers] = useState<Array<{ email: string; _id: string }>>([]);
 
-  console.log(usersList);
   useEffect(() => {
     axios
       .get(`http://localhost:${Port}/user/all`, { withCredentials: true })

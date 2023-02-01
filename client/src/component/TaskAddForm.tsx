@@ -35,8 +35,6 @@ export const TaskAddForm = (props: ProjectAddFormProps) => {
     }
   };
 
-  console.log(users);
-
   const getUsers = (users: Array<string>) => {
     setUsers(users);
   };
