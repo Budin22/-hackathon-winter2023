@@ -7,6 +7,10 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Port } from "./port";
+import { User } from "./UserSelect";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,19 +23,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
     fontWeight:
@@ -43,18 +34,40 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 interface Props {
   getUsers: (users: Array<string>) => void;
-  users: Array<string>;
+  usersList: Array<string>;
 }
 
-export default function UserMultSelect({ getUsers, users }: Props) {
+export default function UserMultSelect({ getUsers, usersList }: Props) {
+  const [personName, setPersonName] = useState<string[]>([]);
+  const [users, setUsers] = useState<Array<{ email: string; _id: string }>>([]);
+
+  console.log(usersList);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:${Port}/user/all`, { withCredentials: true })
+      .then((res) => res.data)
+      .then((data) => {
+        const allUsers = data.data.map((item: User) => {
+          return { email: item.email, _id: item._id };
+        });
+        setUsers(allUsers);
+        setPersonName([]);
+      })
+      .catch((err) => {
+        if (err.response?.status > 200) {
+          console.log("error with get users");
+        }
+      });
+  }, []);
+
   const theme = useTheme();
-  const personName = users;
 
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {
       target: { value },
     } = event;
 
+    setPersonName(typeof value === "string" ? value.split(",") : value);
     getUsers(typeof value === "string" ? value.split(",") : value);
   };
 
@@ -68,7 +81,7 @@ export default function UserMultSelect({ getUsers, users }: Props) {
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
-          value={personName}
+          value={usersList}
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
@@ -80,15 +93,16 @@ export default function UserMultSelect({ getUsers, users }: Props) {
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
+          {!!users.length &&
+            users.map(({ email, _id }) => (
+              <MenuItem
+                key={_id}
+                value={email}
+                style={getStyles(email, personName, theme)}
+              >
+                {email}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
     </div>

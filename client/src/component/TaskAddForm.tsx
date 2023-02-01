@@ -35,6 +35,8 @@ export const TaskAddForm = (props: ProjectAddFormProps) => {
     }
   };
 
+  console.log(users);
+
   const getUsers = (users: Array<string>) => {
     setUsers(users);
   };
@@ -58,7 +60,7 @@ export const TaskAddForm = (props: ProjectAddFormProps) => {
         value={date}
         onChange={(e) => setDate(e.target.value)}
       />
-      <UserMultSelect getUsers={getUsers} users={users} />
+      <UserMultSelect getUsers={getUsers} usersList={users} />
       <Button
         variant="contained"
         type="button"

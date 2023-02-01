@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { Port } from "./port";
 
-interface User {
+export interface User {
   email: string;
   _id: string;
 }
