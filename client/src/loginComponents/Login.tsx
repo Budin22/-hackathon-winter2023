@@ -38,12 +38,14 @@ const Login = () => {
             id="email"
             {...register("email")}
           ></TextField>
+          <p>{errors.email?.message}</p>
           <InputLabel htmlFor="password">Your password</InputLabel>
           <TextField
             type="password"
             id="password"
             {...register("password")}
           ></TextField>
+          <p>{errors.password?.message}</p>
           <Button type="submit">Login</Button>
         </form>
       </Box>
