@@ -53,7 +53,7 @@ const Signin = () => {
             {...register("password2")}
           ></TextField>
           <p>{errors.password2?.message}</p>
-          <Button type="submit">Register</Button>
+          <Button type="submit">Signin</Button>
         </form>
       </Box>
     </div>
