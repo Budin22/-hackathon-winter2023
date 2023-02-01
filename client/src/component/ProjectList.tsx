@@ -36,7 +36,7 @@ export const ProjectList = () => {
       })
       .then((res) => res.data)
       .then((data) => {
-        setProjects(data.data.reverse);
+        setProjects(data.data.reverse());
       })
       .catch((err) => {
         if (err.response?.status > 200) {
